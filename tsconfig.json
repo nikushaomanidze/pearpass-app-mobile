@@ -5,6 +5,7 @@
     "**/*.tsx"
   ],
   "compilerOptions": {
+    "skipLibCheck": true,
     "baseUrl": ".",
     "types": ["jest"],
     "customConditions": [
