@@ -2,20 +2,18 @@ import { useState, useCallback } from 'react'
 
 import { useLingui } from '@lingui/react/macro'
 import { CommonActions, useNavigation } from '@react-navigation/native'
-import { Button, useTheme } from '@tetherto/pearpass-lib-ui-kit'
-import { StyleSheet, View } from 'react-native'
+import { Button } from '@tetherto/pearpass-lib-ui-kit'
 
 import { ImportPreviewStep } from './ImportPreviewStep'
 import { ImportScanStep } from './ImportScanStep'
 import { useImportVault } from './useImportVault'
+import { ScreenLayout } from '../../containers/ScreenLayout'
 import { BackScreenHeader } from '../../containers/ScreenHeader/BackScreenHeader'
-import { ScreenSurface } from '../../containers/ScreenSurface/ScreenSurfaceV2'
 
 type Step = 'scan' | 'preview'
 
 export const ImportVault = () => {
   const { t } = useLingui()
-  const { theme } = useTheme()
   const navigation = useNavigation()
   const [step, setStep] = useState<Step>('scan')
   const [inviteCode, setInviteCode] = useState('')
@@ -93,34 +91,22 @@ export const ImportVault = () => {
     )
 
   return (
-    <View
-      style={[
-        styles.container,
-        { backgroundColor: theme.colors.colorBackground }
-      ]}
-      testID="import-vault-screen"
+    <ScreenLayout
+      header={<BackScreenHeader title={title} onBack={handleBack} />}
+      footer={footer}
+      scrollable
     >
-      <BackScreenHeader title={title} onBack={handleBack} />
-
-      <ScreenSurface footer={footer} scrollable>
-        {step === 'scan' ? (
-          <ImportScanStep
-            isLoading={isLoading}
-            error={error}
-            inviteCode={inviteCode}
-            setInviteCode={setInviteCode}
-            onCodeScanned={handleCodeScanned}
-          />
-        ) : (
-          <ImportPreviewStep vault={pairedVault} error={error} />
-        )}
-      </ScreenSurface>
-    </View>
+      {step === 'scan' ? (
+        <ImportScanStep
+          isLoading={isLoading}
+          error={error}
+          inviteCode={inviteCode}
+          setInviteCode={setInviteCode}
+          onCodeScanned={handleCodeScanned}
+        />
+      ) : (
+        <ImportPreviewStep vault={pairedVault} error={error} />
+      )}
+    </ScreenLayout>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  }
-})

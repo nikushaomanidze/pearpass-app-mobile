@@ -20,8 +20,8 @@ import Svg, { Circle } from 'react-native-svg'
 import { SvgXml } from 'react-native-svg'
 
 import { useShareVault } from './useShareVault'
+import { ScreenLayout } from '../../containers/ScreenLayout'
 import { BackScreenHeader } from '../../containers/ScreenHeader/BackScreenHeader'
-import { ScreenSurface } from '../../containers/ScreenSurface/ScreenSurfaceV2'
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle)
 
@@ -60,17 +60,12 @@ export const ShareVault = () => {
   }))
 
   return (
-    <View
-      style={[
-        styles.container,
-        { backgroundColor: theme.colors.colorBackground }
-      ]}
-      testID="share-vault-screen"
+    <ScreenLayout
+      header={<BackScreenHeader title={t`Share Personal Vault`} onBack={handleBack} />}
+      scrollable
+      hideFooter
     >
-      <BackScreenHeader title={t`Share Personal Vault`} onBack={handleBack} />
-
-      <ScreenSurface scrollable>
-        <View style={styles.content}>
+      <View style={styles.content}>
           <Text variant="caption" color={theme.colors.colorTextSecondary}>
             {t`Access Code`}
           </Text>
@@ -187,16 +182,12 @@ export const ShareVault = () => {
               />
             </View>
           </View>
-        </View>
-      </ScreenSurface>
-    </View>
+      </View>
+    </ScreenLayout>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  },
   content: {
     gap: rawTokens.spacing16
   },

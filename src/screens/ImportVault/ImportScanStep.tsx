@@ -6,7 +6,7 @@ import {
   Button,
   InputField
 } from '@tetherto/pearpass-lib-ui-kit'
-import { Clipboard as ClipboardIcon } from '@tetherto/pearpass-lib-ui-kit/icons'
+import { ContentCopy } from '@tetherto/pearpass-lib-ui-kit/icons'
 import { CameraView } from 'expo-camera'
 import * as Clipboard from 'expo-clipboard'
 import { Dimensions, StyleSheet, View } from 'react-native'
@@ -129,7 +129,7 @@ export const ImportScanStep = ({
             aria-label="Paste"
             data-testid="import-vault-paste-button"
             iconBefore={
-              <ClipboardIcon
+              <ContentCopy
                 width={12}
                 height={15}
                 color={theme.colors.colorTextSecondary}
