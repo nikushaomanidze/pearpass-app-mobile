@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react'
 
 import { useLingui } from '@lingui/react/macro'
 import { CommonActions, useNavigation } from '@react-navigation/native'
-import { Button } from '@tetherto/pearpass-lib-ui-kit'
+import { Button, rawTokens } from '@tetherto/pearpass-lib-ui-kit'
 
 import { ImportPreviewStep } from './ImportPreviewStep'
 import { ImportScanStep } from './ImportScanStep'
@@ -95,6 +95,7 @@ export const ImportVault = () => {
       header={<BackScreenHeader title={title} onBack={handleBack} />}
       footer={footer}
       scrollable
+      contentStyle={{ paddingTop: rawTokens.spacing16, paddingHorizontal: rawTokens.spacing16 }}
     >
       {step === 'scan' ? (
         <ImportScanStep

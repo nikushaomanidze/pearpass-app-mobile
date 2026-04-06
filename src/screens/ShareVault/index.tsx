@@ -64,6 +64,7 @@ export const ShareVault = () => {
       header={<BackScreenHeader title={t`Share Personal Vault`} onBack={handleBack} />}
       scrollable
       hideFooter
+      contentStyle={{ paddingTop: rawTokens.spacing16, paddingHorizontal: rawTokens.spacing16 }}
     >
       <View style={styles.content}>
           <Text variant="caption" color={theme.colors.colorTextSecondary}>
