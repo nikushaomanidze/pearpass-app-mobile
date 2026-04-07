@@ -55,7 +55,7 @@ export const useShareVault = () => {
         }
       )
     }
-  }, [data])
+  }, [data?.publicKey])
 
   const handleCopy = useCallback(() => {
     if (data?.publicKey) {
