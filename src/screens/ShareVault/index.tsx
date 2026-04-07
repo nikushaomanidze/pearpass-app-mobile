@@ -9,7 +9,7 @@ import {
   Button
 } from '@tetherto/pearpass-lib-ui-kit'
 import { ContentCopy } from '@tetherto/pearpass-lib-ui-kit/icons'
-import { StyleSheet, Text as RNText, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import Animated, {
   Easing,
   useAnimatedProps,
@@ -156,16 +156,9 @@ export const ShareVault = () => {
                 >
                   {t`Vault Link`}
                 </Text>
-                <RNText
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                  style={[
-                    styles.vaultLinkText,
-                    { color: theme.colors.colorTextPrimary }
-                  ]}
-                >
+                <Text numberOfLines={1} color={theme.colors.colorTextPrimary}>
                   {vaultLink || t`Generating link...`}
-                </RNText>
+                </Text>
               </View>
               <Button
                 variant="tertiary"
@@ -230,8 +223,5 @@ const styles = StyleSheet.create({
   vaultLinkContent: {
     flex: 1,
     gap: 2
-  },
-  vaultLinkText: {
-    fontSize: 14
   }
 })
