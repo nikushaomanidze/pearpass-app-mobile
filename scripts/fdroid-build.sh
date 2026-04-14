@@ -3,6 +3,7 @@ set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 phase="${1:-build}"
+target_abi="${2:-}"
 
 cd "$repo_root"
 
@@ -165,7 +166,12 @@ run_build() {
     perl -0777 -i -pe "s/android\\s*\\{\\n/android {\\n    dependenciesInfo {\\n        includeInApk = false\\n        includeInBundle = false\\n    }\\n/s" app/build.gradle
   fi
   if ! grep -q "splits {" app/build.gradle; then
-    perl -0777 -i -pe "s/android\\s*\\{\\n/android {\\n    splits {\\n        abi {\\n            enable true\\n            reset()\\n            include \"arm64-v8a\", \"armeabi-v7a\", \"x86\", \"x86_64\"\\n            universalApk false\\n        }\\n    }\\n/s" app/build.gradle
+    if [ -n "$target_abi" ]; then
+      abi_include="\"$target_abi\""
+    else
+      abi_include="\"arm64-v8a\", \"armeabi-v7a\", \"x86\", \"x86_64\""
+    fi
+    perl -0777 -i -pe "s/android\\s*\\{\\n/android {\\n    splits {\\n        abi {\\n            enable true\\n            reset()\\n            include $abi_include\\n            universalApk false\\n        }\\n    }\\n/s" app/build.gradle
     # Assign unique versionCode per ABI so F-Droid can serve the correct APK
     cat >> app/build.gradle <<'VCODE'
 
@@ -292,6 +298,12 @@ PYSTUB
 -dontwarn java.awt.**
 PROGUARD
   fi
+  if [ ! -f app/debug.keystore ]; then
+    keytool -genkeypair -v -keystore app/debug.keystore \
+      -storepass android -alias androiddebugkey -keypass android \
+      -keyalg RSA -keysize 2048 -validity 10000 \
+      -dname "CN=Android Debug,O=Android,C=US" 2>/dev/null
+  fi
   ensure_java_home
   JAVA_HOME="$JAVA_HOME" GRADLE_USER_HOME=/tmp/pearpass-gradle-home ./gradlew :app:clean :app:assembleFdroidRelease --no-daemon -Dorg.gradle.vfs.watch=false -Dorg.gradle.java.installations.auto-download=false -Dorg.gradle.java.installations.auto-detect=false -Dorg.gradle.java.installations.paths="$JAVA_HOME" -Pandroid.enableDependencyInfoInApk=false -Pandroid.enableDependencyInfoInBundle=false -Pandroid.enableProguardInReleaseBuilds=true
 }
@@ -308,7 +320,8 @@ case "$phase" in
     run_build
     ;;
   *)
-    echo "Usage: bash scripts/fdroid-build.sh [prebuild|build|all]" >&2
+    echo "Usage: bash scripts/fdroid-build.sh [prebuild|build|all] [abi]" >&2
+    echo "  abi: arm64-v8a, armeabi-v7a, x86, x86_64 (optional, builds all if omitted)" >&2
     exit 64
     ;;
 esac
