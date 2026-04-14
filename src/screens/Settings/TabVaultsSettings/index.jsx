@@ -30,8 +30,8 @@ export const VaultsManageSection = () => {
           key={vault.id}
           name={vault?.name ?? vault?.id}
           date={vault.createdAt}
-          testID={`vault-item-${vault.id}`}
-          accessibilityLabel={`vault-item-${vault.id}`}
+          testID="vault-item"
+          accessibilityLabel="vault-item"
           nameTestID="vault-name"
           nameAccessibilityLabel="Vault Name"
           dateTestID="vault-date"
