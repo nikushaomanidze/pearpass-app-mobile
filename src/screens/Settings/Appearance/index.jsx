@@ -7,18 +7,13 @@ import { BackIcon } from '@tetherto/pearpass-lib-ui-react-native-components'
 import { colors } from '@tetherto/pearpass-lib-ui-theme-provider/native'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { isV2 } from 'src/utils/designVersion'
 
-import { AppearanceV2 } from './AppearanceV2'
 import { CardSingleSetting } from '../../../components/CardSingleSetting'
 import { SelectInput } from '../../../components/SelectInput'
 import { useLanguageOptions } from '../../../hooks/useLanguageOptions'
 import { ButtonLittle } from '../../../libComponents'
 
 export const Appearance = () => {
-  if (isV2()) {
-    return <AppearanceV2 />
-  }
   const { t } = useLingui()
   const navigation = useNavigation()
   const { languageOptions } = useLanguageOptions()

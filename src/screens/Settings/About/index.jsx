@@ -24,9 +24,7 @@ import {
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Toast from 'react-native-toast-message'
-import { isV2 } from 'src/utils/designVersion'
 
-import { AboutV2 } from './AboutV2'
 import { version } from '../../../../package.json'
 import { CardSingleSetting } from '../../../components/CardSingleSetting'
 import {
@@ -39,9 +37,6 @@ import { logger } from '../../../utils/logger'
 import { ReportSection } from '../ReportSection'
 
 export const About = () => {
-  if (isV2()) {
-    return <AboutV2 />
-  }
   const { t } = useLingui()
   const navigation = useNavigation()
 
