@@ -114,7 +114,7 @@ export const SettingsV2 = () => {
           {
             key: 'language',
             label: t`Language`,
-            screen: 'Appearance',
+            screen: 'AppearanceV2',
             icon: Translate
           }
         ]
