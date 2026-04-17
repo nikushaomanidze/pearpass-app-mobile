@@ -35,6 +35,6 @@ module.exports = function (api) {
         }
       ]
     ],
-    plugins: ['macros', 'react-native-worklets-core/plugin']
+    plugins: ['macros']
   }
 }

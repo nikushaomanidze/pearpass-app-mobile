@@ -8,10 +8,9 @@ import {
   CommonFileIcon,
   DeleteIcon
 } from '@tetherto/pearpass-lib-ui-react-native-components'
-import * as FileSystem from 'expo-file-system'
+import { CameraView } from 'expo-camera'
 import * as ImagePicker from 'expo-image-picker'
 import { Image } from 'react-native'
-import { Camera, useCameraDevice } from 'react-native-vision-camera'
 
 import {
   ActionsWrapper,
@@ -40,7 +39,6 @@ export const BottomSheetUploadImageContent = withAutoLockBypass(
     const { collapse } = useBottomSheet()
     const { t } = useLingui()
     const cameraRef = useRef(null)
-    const device = useCameraDevice('back')
     const [capturedPhoto, setCapturedPhoto] = useState(null)
     const [mode, setMode] = useState('camera')
     const [isFileSizeWarning, setIsFileSizeWarning] = useState(false)
@@ -78,15 +76,11 @@ export const BottomSheetUploadImageContent = withAutoLockBypass(
     const handleTakePhoto = async () => {
       if (cameraRef.current) {
         try {
-          const photo = await cameraRef.current.takePhoto({})
-          const photoPath = photo.path.startsWith('file://')
-            ? photo.path
-            : `file://${photo.path}`
-          const base64 = await FileSystem.readAsStringAsync(photoPath, {
-            encoding: FileSystem.EncodingType.Base64
+          const photo = await cameraRef.current.takePictureAsync({
+            base64: true
           })
 
-          setCapturedPhoto({ uri: photoPath, base64 })
+          setCapturedPhoto(photo)
 
           if (isFileSizeWarning) {
             setIsFileSizeWarning(false)
@@ -144,18 +138,16 @@ export const BottomSheetUploadImageContent = withAutoLockBypass(
                 />
               </DeleteIconWrapper>
             </PreviewWrapper>
-          ) : device ? (
-            <Camera
-              ref={cameraRef}
-              device={device}
-              isActive={mode === 'camera'}
-              photo={true}
+          ) : (
+            <CameraView
               style={{
                 flex: 1,
                 borderRadius: 10
               }}
+              ratio="4:3"
+              ref={cameraRef}
             />
-          ) : null}
+          )}
         </CameraWrapper>
 
         <ActionsWrapper>

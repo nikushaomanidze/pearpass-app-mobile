@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react'
 
 import { useUserData } from '@tetherto/pearpass-lib-vault'
 
+import { isV2 } from '../../../utils/designVersion'
 import { logger } from '../../../utils/logger'
 import * as SplashScreen from '../../../utils/SplashScreen'
+import { unsupportedFeaturesEnabled } from '../../../utils/unsupportedFeatures'
 
 /**
  * Custom hook to determine the initial route for navigation.
@@ -27,7 +29,14 @@ export const useRedirect = () => {
         const userData = await refetchUserData()
 
         if (!userData?.hasPasswordSet) {
-          setInitialRouteName('Intro')
+          setInitialRouteName(isV2() ? 'OnboardingV2' : 'Intro')
+          return
+        }
+
+        if (isV2()) {
+          setInitialRouteName(
+            unsupportedFeaturesEnabled() ? 'AuthV2Pin' : 'AuthV2MasterPassword'
+          )
           return
         }
 

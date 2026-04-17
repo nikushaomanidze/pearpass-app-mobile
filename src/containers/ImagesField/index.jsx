@@ -7,9 +7,12 @@ import {
   PlusIcon
 } from '@tetherto/pearpass-lib-ui-react-native-components'
 import { colors } from '@tetherto/pearpass-lib-ui-theme-provider'
+import { Camera } from 'expo-camera'
 import { Alert, Pressable, Linking } from 'react-native'
-import { Camera } from 'react-native-vision-camera'
 
+import { useBottomSheet } from '../../context/BottomSheetContext'
+import { logger } from '../../utils/logger'
+import { BottomSheetUploadImageContent } from '../BottomSheetUploadImageContent'
 import {
   AddContainer,
   Body,
@@ -20,9 +23,6 @@ import {
   Title
 } from './styles'
 import { useAutoLockContext } from '../../context/AutoLockContext'
-import { useBottomSheet } from '../../context/BottomSheetContext'
-import { logger } from '../../utils/logger'
-import { BottomSheetUploadImageContent } from '../BottomSheetUploadImageContent'
 
 /**
  * @component
@@ -31,8 +31,23 @@ import { BottomSheetUploadImageContent } from '../BottomSheetUploadImageContent'
  * @param {Array<Object>} [props.pictures=[]]
  * @param {function} [props.onAdd]
  * @param {function} [props.onRemove]
+ * @param {function} [props.onRename]
+ * @param {string} [props.testID]
+ * @param {string} [props.accessibilityLabel]
+ * @param {string} [props.addButtonTestID]
+ * @param {string} [props.addButtonAccessibilityLabel]
  */
-const ImagesFieldComponent = ({ title, pictures = [], onAdd, onRemove }) => {
+const ImagesFieldComponent = ({
+  title,
+  pictures = [],
+  onAdd,
+  onRemove,
+  onRename,
+  testID,
+  accessibilityLabel,
+  addButtonTestID,
+  addButtonAccessibilityLabel
+}) => {
   const { expand } = useBottomSheet()
   const navigation = useNavigation()
   const { t } = useLingui()
@@ -57,24 +72,26 @@ const ImagesFieldComponent = ({ title, pictures = [], onAdd, onRemove }) => {
       navigation.navigate('ImagePreview', {
         imageUri: uri,
         imageName: name,
-        onDelete: onRemove ? () => onRemove(index) : undefined
+        onDelete: onRemove ? () => onRemove(index) : undefined,
+        onRename: onRename ? (newName) => onRename(index, newName) : undefined
       })
     },
-    [navigation, onRemove]
+    [navigation, onRemove, onRename]
   )
 
   const handleAddClick = useCallback(async () => {
     try {
       setShouldBypassAutoLock(true)
-      const cameraStatus = Camera.getCameraPermissionStatus()
-      let cameraGranted = cameraStatus === 'granted'
+      const cameraPermission = await Camera.getCameraPermissionsAsync()
 
-      if (!cameraGranted && cameraStatus === 'not-determined') {
-        const result = await Camera.requestCameraPermission()
-        cameraGranted = result === 'granted'
+      let cameraGranted = cameraPermission.status === 'granted'
+
+      if (!cameraGranted && cameraPermission.canAskAgain) {
+        const result = await Camera.requestCameraPermissionsAsync()
+        cameraGranted = result.status === 'granted'
       }
 
-      if (!cameraGranted) {
+      if (!cameraGranted && !cameraPermission.canAskAgain) {
         Alert.alert(
           t`Permission Required`,
           t`Camera access is required to take photos. Please enable it in Settings.`,
@@ -85,6 +102,15 @@ const ImagesFieldComponent = ({ title, pictures = [], onAdd, onRemove }) => {
               onPress: () => Linking.openSettings()
             }
           ]
+        )
+        return
+      }
+
+      if (!cameraGranted) {
+        Alert.alert(
+          t`Permission Required`,
+          t`Camera access is required to take photos.`,
+          [{ text: t`OK` }]
         )
         return
       }
@@ -101,7 +127,7 @@ const ImagesFieldComponent = ({ title, pictures = [], onAdd, onRemove }) => {
   }, [expand, onAdd, t])
 
   return (
-    <Container>
+    <Container testID={testID} accessibilityLabel={accessibilityLabel}>
       <Header>
         <ImageIcon />
         <Title>{title}</Title>
@@ -120,7 +146,11 @@ const ImagesFieldComponent = ({ title, pictures = [], onAdd, onRemove }) => {
         ))}
 
         {onAdd && (
-          <AddContainer onPress={handleAddClick}>
+          <AddContainer
+            onPress={handleAddClick}
+            testID={addButtonTestID}
+            accessibilityLabel={addButtonAccessibilityLabel}
+          >
             <PlusIcon color={colors.primary400.mode1} />
           </AddContainer>
         )}
