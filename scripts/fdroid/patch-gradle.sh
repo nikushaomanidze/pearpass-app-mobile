@@ -10,7 +10,7 @@ cd "$repo_root/android"
 
 # --- Remove Google Play / Firebase / ML Kit dependencies ---
 
-google_dep_re='com\.google\.android\.gms|com\.google\.mlkit|com\.google\.firebase|com\.google\.android\.datatransport|play-services-|firebase-|googleid|credentials-play-services-auth|barcode-scanning'
+google_dep_re='com\.google\.android\.gms|com\.google\.mlkit|com\.google\.firebase|com\.google\.android\.datatransport|play-services-|firebase-|googleid|credentials-play-services-auth|barcode-scanning|camera-mlkit-vision'
 
 perl -i -ne "print unless /$google_dep_re/" app/build.gradle
 
