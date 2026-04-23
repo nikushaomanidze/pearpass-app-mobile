@@ -226,7 +226,7 @@ For more information, see the [Maestro documentation](https://maestro.mobile.dev
 
 ## Contributing
 
-We welcome contributions. See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for the dev loop, coding conventions, and how to run the test suite.
+We welcome contributions. See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for the development workflow and coding conventions.
 
 ---
 
