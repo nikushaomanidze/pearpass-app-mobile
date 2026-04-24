@@ -5,6 +5,7 @@ import { withIosAutofillModule } from './ios/withIosAutofillModule';
 import { withAndroidAutofillService } from './android/withAndroidAutofillService';
 import { withAndroidManifest } from './android/withAndroidManifest';
 import { withAndroidAutofillModule } from './android/withAndroidAutofillModule';
+import { withAndroidDesignVersion } from './android/withAndroidDesignVersion';
 
 export interface AutofillPluginOptions {
   ios: {
@@ -23,6 +24,7 @@ const withAutofillPlugin: ConfigPlugin<AutofillPluginOptions> = (config, options
     [withAndroidAutofillService, options],
     [withAndroidManifest, options],
     [withAndroidAutofillModule, options],
+    [withAndroidDesignVersion, options],
   ]);
 };
 
