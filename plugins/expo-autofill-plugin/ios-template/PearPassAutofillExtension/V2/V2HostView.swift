@@ -169,6 +169,7 @@ struct V2HostView: View {
             comment: $formComment,
             folderName: nil,
             saveError: formSaveError,
+            isSaving: isSavingPasskey,
             onBack: { showPasskeyForm = false },
             onClose: onCancel,
             onSelectFolder: {},

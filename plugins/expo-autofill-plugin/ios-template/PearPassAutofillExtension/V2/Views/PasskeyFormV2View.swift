@@ -22,6 +22,10 @@ struct PasskeyFormV2View: View {
     var titleError: String? = nil
     var websiteError: String? = nil
     var saveError: String? = nil
+    /// Disables Save/Discard while the passkey is being generated and the
+    /// ADD/UPDATE job is being written so the user cannot fire the save
+    /// twice or dismiss mid-flight.
+    var isSaving: Bool = false
 
     var onBack: () -> Void = {}
     var onClose: () -> Void = {}
@@ -132,10 +136,20 @@ struct PasskeyFormV2View: View {
                                 .padding(.bottom, PPSpacing.s8)
                         }
 
-                        PPButton(title: "Save & Add Login", variant: .primary, action: onSave)
+                        PPButton(
+                            title: isSaving ? "Saving..." : "Save & Add Login",
+                            variant: .primary,
+                            isEnabled: !isSaving,
+                            action: onSave
+                        )
 
-                        PPButton(title: "Discard", variant: .secondary, action: onDiscard)
-                            .padding(.top, PPSpacing.s8)
+                        PPButton(
+                            title: "Discard",
+                            variant: .secondary,
+                            isEnabled: !isSaving,
+                            action: onDiscard
+                        )
+                        .padding(.top, PPSpacing.s8)
                     }
                     .padding(.horizontal, PPSpacing.s16)
                     .padding(.top, PPSpacing.s16)
