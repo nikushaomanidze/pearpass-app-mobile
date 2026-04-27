@@ -17,10 +17,7 @@ struct PasskeyFormV2View: View {
     @Binding var passkeyDate: String
     @Binding var website: String
     @Binding var comment: String
-    var folderName: String?
 
-    var titleError: String? = nil
-    var websiteError: String? = nil
     var saveError: String? = nil
     /// Disables Save/Discard while the passkey is being generated and the
     /// ADD/UPDATE job is being written so the user cannot fire the save
@@ -29,7 +26,6 @@ struct PasskeyFormV2View: View {
 
     var onBack: () -> Void = {}
     var onClose: () -> Void = {}
-    var onSelectFolder: () -> Void = {}
     var onSave: () -> Void = {}
     var onDiscard: () -> Void = {}
 
@@ -51,13 +47,6 @@ struct PasskeyFormV2View: View {
                                 text: $titleText,
                                 placeholder: NSLocalizedString("Title", comment: "V2 passkey form field")
                             )
-
-                            if let titleError = titleError {
-                                Text(titleError)
-                                    .font(PPTypography.caption)
-                                    .foregroundColor(PPColors.surfaceError)
-                                    .padding(.top, PPSpacing.s4)
-                            }
 
                             // Section: Credentials
                             sectionHeader(NSLocalizedString("Credentials", comment: "V2 passkey form section"))
@@ -92,28 +81,12 @@ struct PasskeyFormV2View: View {
                                 keyboardType: .URL
                             )
 
-                            if let websiteError = websiteError {
-                                Text(websiteError)
-                                    .font(PPTypography.caption)
-                                    .foregroundColor(PPColors.surfaceError)
-                                    .padding(.top, PPSpacing.s4)
-                            }
-
                             Spacer().frame(height: PPSpacing.s8)
 
                             PPInputField(
                                 label: NSLocalizedString("Comment", comment: "V2 passkey form field"),
                                 text: $comment,
                                 placeholder: NSLocalizedString("Optional", comment: "V2 comment placeholder")
-                            )
-
-                            Spacer().frame(height: PPSpacing.s8)
-
-                            // Folder selector
-                            PPListItem(
-                                title: folderName ?? NSLocalizedString("Select folder", comment: "V2 folder picker default"),
-                                leadingIcon: nil,
-                                onTap: onSelectFolder
                             )
                         }
                         .padding(PPSpacing.s16)

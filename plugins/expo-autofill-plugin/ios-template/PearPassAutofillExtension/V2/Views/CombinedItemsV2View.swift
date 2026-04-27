@@ -38,14 +38,11 @@ struct CombinedItemsV2View: View {
     var credentials: [CombinedCredentialOption] = []
 
     var isLoading: Bool = false
-    var requiresVaultPassword: Bool = false
-    @Binding var vaultPassword: String
 
     var onClose: () -> Void = {}
     var onSelectVault: (String) -> Void = { _ in }
     var onSelectCredential: (String) -> Void = { _ in }
     var onAddNewLogin: () -> Void = {}
-    var onUnlockVault: () -> Void = {}
 
     var body: some View {
         VStack(spacing: 0) {
@@ -183,8 +180,6 @@ struct CombinedItemsV2View: View {
         } else {
             credentialsList
         }
-        // Vault password prompt branch is intentionally removed — business logic
-        // does not support per-vault passwords yet (master password is sufficient).
     }
 
     private var credentialsList: some View {
@@ -245,40 +240,4 @@ struct CombinedItemsV2View: View {
             .onTapGesture { onAddNewLogin() }
     }
 
-    // Vault password prompt UI removed — business logic doesn't yet support
-    // per-vault passwords; master password covers it.
-    /*
-    private var vaultPasswordPrompt: some View {
-        VStack(spacing: 0) {
-            Text("Unlock Vault")
-                .font(PPTypography.bodyEmphasized)
-                .foregroundColor(PPColors.textPrimary)
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: .infinity)
-                .padding(.top, PPSpacing.s24)
-
-            Text("Enter vault password to continue")
-                .font(PPTypography.label)
-                .foregroundColor(PPColors.textSecondary)
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: .infinity)
-                .padding(.top, PPSpacing.s8)
-
-            Spacer().frame(height: PPSpacing.s24)
-
-            PPPasswordField(
-                label: "Password",
-                text: $vaultPassword,
-                placeholder: "Vault password"
-            )
-
-            Spacer()
-
-            PPButton(title: "Continue", variant: .primary, action: onUnlockVault)
-                .padding(.top, PPSpacing.s16)
-                .padding(.bottom, PPSpacing.s16)
-        }
-        .padding(.horizontal, PPSpacing.s16)
-    }
-    */
 }

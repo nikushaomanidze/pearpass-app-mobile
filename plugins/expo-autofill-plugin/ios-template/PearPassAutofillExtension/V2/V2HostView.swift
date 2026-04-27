@@ -47,7 +47,6 @@ struct V2HostView: View {
     @State private var formComment: String = ""
     @State private var formSaveError: String?
     @State private var isSavingPasskey: Bool = false
-    @State private var loadedFolders: [String] = []
     /// Set when the user picks an existing matching record on registration —
     /// causes save to fire UPDATE_PASSKEY (or refresh a pending ADD) instead
     /// of a fresh ADD_PASSKEY.
@@ -142,8 +141,6 @@ struct V2HostView: View {
                     )
                 },
                 isLoading: isLoadingCredentials,
-                requiresVaultPassword: false,
-                vaultPassword: bindingFor(\.vaultPassword),
                 onClose: onCancel,
                 onSelectVault: { vaultId in
                     if let vault = viewModel.vaults.first(where: { $0.id == vaultId }) {
@@ -157,8 +154,7 @@ struct V2HostView: View {
                     }
                 },
                 onSelectCredential: handleSelectCredential,
-                onAddNewLogin: handleAddNewLogin,
-                onUnlockVault: {}
+                onAddNewLogin: handleAddNewLogin
             )
         }
     }
@@ -171,12 +167,10 @@ struct V2HostView: View {
             passkeyDate: $formPasskeyDate,
             website: $formWebsite,
             comment: $formComment,
-            folderName: nil,
             saveError: formSaveError,
             isSaving: isSavingPasskey,
             onBack: { showPasskeyForm = false },
             onClose: onCancel,
-            onSelectFolder: {},
             onSave: handleFormSave,
             onDiscard: { showPasskeyForm = false }
         )
@@ -242,11 +236,9 @@ struct V2HostView: View {
                 guard let passwordData = password.data(using: .utf8) else { return }
                 try await client.initWithPassword(password: passwordData)
                 let vaults = try await client.listVaults()
-                let folders = (try? await client.listFolders()) ?? []
 
                 await MainActor.run {
                     viewModel.vaults = vaults
-                    loadedFolders = folders
                     viewModel.authenticateWithMasterPassword()
                     if let first = vaults.first {
                         viewModel.selectedVault = first
