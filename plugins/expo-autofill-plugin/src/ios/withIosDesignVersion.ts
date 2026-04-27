@@ -60,33 +60,25 @@ export const withIosDesignVersion: ConfigPlugin<AutofillPluginOptions> = (config
     async (cfg) => {
       const version = readDesignVersion(cfg.modRequest.projectRoot);
 
-      // Always update the template Info.plist at source so the next withIosAutofillExtension
-      // copy carries the correct value regardless of plugin execution order.
-      const templatePlistPath = path.join(
-        __dirname,
-        '../../ios-template/PearPassAutofillExtension/Info.plist'
-      );
-      if (fs.existsSync(templatePlistPath)) {
-        try {
-          await applyDesignVersionToPlist(templatePlistPath, version);
-        } catch (err) {
-          console.warn(`[withIosDesignVersion] failed to update template Info.plist: ${err}`);
-        }
-      }
-
-      // Also try to update the generated extension Info.plist (works if this plugin runs
-      // after withIosAutofillExtension's template copy in the dangerous-mod chain).
+      // Write only into the generated extension Info.plist under the prebuild
+      // output. The template under ios-template/ is checked in and must not be
+      // mutated — withIosAutofillExtension is registered before this plugin
+      // (see src/index.ts) so the template has already been copied.
       const generatedPlistPath = path.join(
         cfg.modRequest.platformProjectRoot,
         'PearPassAutofillExtension',
         'Info.plist'
       );
-      if (fs.existsSync(generatedPlistPath)) {
-        try {
-          await applyDesignVersionToPlist(generatedPlistPath, version);
-        } catch (err) {
-          console.warn(`[withIosDesignVersion] failed to update generated Info.plist: ${err}`);
-        }
+      if (!fs.existsSync(generatedPlistPath)) {
+        console.warn(
+          `[withIosDesignVersion] generated Info.plist not found at ${generatedPlistPath}`
+        );
+        return cfg;
+      }
+      try {
+        await applyDesignVersionToPlist(generatedPlistPath, version);
+      } catch (err) {
+        console.warn(`[withIosDesignVersion] failed to update generated Info.plist: ${err}`);
       }
 
       return cfg;
