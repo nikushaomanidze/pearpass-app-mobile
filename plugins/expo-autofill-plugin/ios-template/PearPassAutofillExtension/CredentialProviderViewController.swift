@@ -103,6 +103,12 @@ class CredentialProviderViewController: ASCredentialProviderViewController {
     }
 
     private func setupSwiftUIView() {
+        // V2 routing — design version flag from extension's Info.plist (build-time).
+        if DesignVersion.isV2 {
+            setupV2AssertionView()
+            return
+        }
+
         let mainView = ExtensionMainView(
             serviceIdentifiers: serviceIdentifiers,
             presentationWindow: self.view.window,
@@ -236,6 +242,13 @@ class CredentialProviderViewController: ASCredentialProviderViewController {
         // Create registration request
         let registrationRequest = PasskeyRegistrationRequest(from: passkeyRequest)
 
+        // V2 routing — V2 design + full save (passkey form + PasskeyJobCreator).
+        if DesignVersion.isV2 {
+            isSettingUpPasskeyRegistration = false
+            setupV2RegistrationView(registrationRequest: registrationRequest)
+            return
+        }
+
         // Present registration UI
         let registrationView = PasskeyRegistrationView(
             request: registrationRequest,
@@ -329,6 +342,13 @@ class CredentialProviderViewController: ASCredentialProviderViewController {
         rpId: String,
         clientDataHash: Data
     ) {
+        // V2 routing — assertion flow (passkey-aware path falls back to V2HostView,
+        // which currently surfaces credentials only; passkey assertion wiring is V1 for now).
+        if DesignVersion.isV2 {
+            setupV2AssertionView()
+            return
+        }
+
         let mainView = ExtensionMainView(
             serviceIdentifiers: serviceIdentifiers,
             presentationWindow: self.view.window,
@@ -415,6 +435,84 @@ class CredentialProviderViewController: ASCredentialProviderViewController {
     }
 
     // MARK: - Passkey Without User Interaction (iOS 17+)
+
+    // MARK: - V2 hosting (design version 2)
+
+    private func setupV2AssertionView() {
+        attachV2HostView(mode: .assertion, registrationContext: nil)
+    }
+
+    @available(iOS 17.0, *)
+    private func setupV2RegistrationView(registrationRequest: PasskeyRegistrationRequest) {
+        let ctx = V2RegistrationContext(
+            rpId: registrationRequest.rpId,
+            rpName: registrationRequest.rpName,
+            userId: registrationRequest.userId,
+            userName: registrationRequest.userName,
+            userDisplayName: registrationRequest.userDisplayName,
+            challenge: registrationRequest.challenge
+        )
+        attachV2HostView(mode: .registration, registrationContext: ctx)
+    }
+
+    private func attachV2HostView(mode: CombinedItemsMode, registrationContext: V2RegistrationContext?) {
+        // Flatten the system sheet's rounded corners on iOS 16.4+ so V2's edges
+        // run flush with the screen (mirrors Android's borderless partial sheet).
+        if #available(iOS 16.0, *) {
+            sheetPresentationController?.preferredCornerRadius = 0
+        }
+
+        let onCompleteRegistration: ((PasskeyCredential, Data, Data) -> Void)? = {
+            if mode == .registration {
+                return { [weak self] credential, attestationObject, credentialId in
+                    if #available(iOS 17.0, *) {
+                        self?.completePasskeyRegistration(
+                            credential: credential,
+                            attestationObject: attestationObject,
+                            credentialId: credentialId
+                        )
+                    }
+                }
+            }
+            return nil
+        }()
+
+        let v2View = V2HostView(
+            serviceIdentifiers: serviceIdentifiers,
+            presentationWindow: self.view.window,
+            mode: mode,
+            registrationContext: registrationContext,
+            onCancel: { [weak self] in
+                self?.performCleanupSync()
+                self?.cancel(nil)
+            },
+            onComplete: { [weak self] username, password in
+                self?.performCleanupSync()
+                let credential = ASPasswordCredential(user: username, password: password)
+                self?.extensionContext.completeRequest(withSelectedCredential: credential, completionHandler: nil)
+            },
+            onCompleteRegistration: onCompleteRegistration,
+            onVaultClientCreated: { [weak self] client in
+                self?.vaultClient = client
+            }
+        )
+
+        let hostingController = UIHostingController(rootView: v2View)
+
+        addChild(hostingController)
+        view.addSubview(hostingController.view)
+        hostingController.didMove(toParent: self)
+
+        hostingController.view.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            hostingController.view.topAnchor.constraint(equalTo: view.topAnchor),
+            hostingController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            hostingController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            hostingController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+
+        extensionHostingController = hostingController
+    }
 
     @available(iOS 17.0, *)
     override func provideCredentialWithoutUserInteraction(for credentialRequest: ASCredentialRequest) {
