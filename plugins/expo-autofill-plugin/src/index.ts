@@ -2,6 +2,7 @@ import { ConfigPlugin, withPlugins } from '@expo/config-plugins';
 import { withIosAutofillExtension } from './ios/withIosAutofillExtension';
 import { withIosPodfile } from './ios/withIosPodfile';
 import { withIosAutofillModule } from './ios/withIosAutofillModule';
+import { withIosDesignVersion } from './ios/withIosDesignVersion';
 import { withAndroidAutofillService } from './android/withAndroidAutofillService';
 import { withAndroidManifest } from './android/withAndroidManifest';
 import { withAndroidAutofillModule } from './android/withAndroidAutofillModule';
@@ -20,6 +21,7 @@ const withAutofillPlugin: ConfigPlugin<AutofillPluginOptions> = (config, options
     [withIosAutofillExtension, options],
     [withIosPodfile, options],
     [withIosAutofillModule, options],
+    [withIosDesignVersion, options],
     // Android
     [withAndroidAutofillService, options],
     [withAndroidManifest, options],

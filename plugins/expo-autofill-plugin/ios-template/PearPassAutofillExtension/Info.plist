@@ -42,5 +42,7 @@
 		<string>Inter.ttf</string>
 		<string>HumbleNostalgia.otf</string>
 	</array>
+	<key>PEARPASS_DESIGN_VERSION</key>
+	<integer>1</integer>
 </dict>
 </plist>
