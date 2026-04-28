@@ -21,17 +21,33 @@ struct PPButton: View {
     let variant: PPButtonVariant
     var leadingIcon: Image? = nil
     var isEnabled: Bool = true
+    /// Renders a circular spinner before the title (and hides leadingIcon)
+    /// while an async action is in flight. Mirrors V1 MasterPasswordView's
+    /// `if isLoading { ProgressView + Text }` button content. The caller is
+    /// responsible for setting `isEnabled` to false alongside `isLoading`
+    /// so the user can't tap during the in-flight state.
+    var isLoading: Bool = false
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: PPSpacing.s4) {
-                if let leadingIcon = leadingIcon {
-                    leadingIcon
-                        .renderingMode(.template)
+            HStack(spacing: PPSpacing.s8) {
+                if isLoading {
+                    // Spinner-only — title is hidden during in-flight async
+                    // actions (per design). The button stays sized via the
+                    // outer frame so the surrounding layout doesn't jump.
+                    ProgressView()
+                        .progressViewStyle(.circular)
+                        .tint(textColor)
+                        .scaleEffect(0.9)
+                } else {
+                    if let leadingIcon = leadingIcon {
+                        leadingIcon
+                            .renderingMode(.template)
+                    }
+                    Text(title)
+                        .font(PPTypography.labelEmphasized)
                 }
-                Text(title)
-                    .font(PPTypography.labelEmphasized)
             }
             .frame(maxWidth: .infinity)
             .padding(PPSpacing.s12)

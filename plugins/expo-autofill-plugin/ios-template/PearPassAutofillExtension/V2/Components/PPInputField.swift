@@ -25,11 +25,11 @@ struct PPInputField: View {
         HStack(alignment: .center, spacing: PPSpacing.s4) {
             VStack(alignment: .leading, spacing: PPSpacing.s4) {
                 Text(label)
-                    .font(PPTypography.label)
-                    .foregroundColor(PPColors.textSecondary)
+                    .font(PPTypography.caption)
+                    .foregroundColor(PPColors.textPrimary)
 
                 TextField("", text: $text, prompt: Text(placeholder).foregroundColor(PPColors.textSecondary))
-                    .font(PPTypography.body)
+                    .font(PPTypography.labelEmphasized)
                     .foregroundColor(PPColors.textPrimary)
                     .keyboardType(keyboardType)
                     .textContentType(textContentType)

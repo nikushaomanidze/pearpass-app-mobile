@@ -8,6 +8,7 @@
 /* Common */
 "Continue" = "Continue";
 "Loading..." = "Loading...";
+"Closing..." = "Closing...";
 "Cancel" = "Cancel";
 "Go Back" = "Go Back";
 
@@ -76,22 +77,37 @@
 "Enter Your Master Password" = "Enter Your Master Password";
 "Please enter your master password to continue" = "Please enter your master password to continue";
 "Password" = "Password";
+"Invalid master password" = "Invalid master password";
+"Use Passkey" = "Use Passkey";
+"Passkey authentication failed" = "Passkey authentication failed";
+"Failed to retrieve encryption data from passkey" = "Failed to retrieve encryption data from passkey";
+"Unable to get presentation window" = "Unable to get presentation window";
+
+/* V2 — vault password screen (kept for future re-wiring) */
+"Vault password" = "Vault password";
 
 /* V2 — passkey form */
 "Title" = "Title";
 "Credentials" = "Credentials";
-"Email or Username" = "Email or Username";
+"Email / Username" = "Email / Username";
 "Passkey" = "Passkey";
 "Date" = "Date";
 "Details" = "Details";
 "Website" = "Website";
+"Enter Website" = "Enter Website";
 "https://..." = "https://...";
 "Comment" = "Comment";
 "Optional" = "Optional";
+"Folder" = "Folder";
 "Select folder" = "Select folder";
 "Save & Add Login" = "Save & Add Login";
 "Saving..." = "Saving...";
 "Discard" = "Discard";
+"Upload File" = "Upload File";
+"Replace Passkey" = "Replace Passkey";
+"Replace" = "Replace";
+"This login already has a passkey. Do you want to replace it?" = "This login already has a passkey. Do you want to replace it?";
+"Your file is too large. Please upload one that's 6 MB or smaller." = "Your file is too large. Please upload one that's 6 MB or smaller.";
 "Missing registration context" = "Missing registration context";
 "Title is required" = "Title is required";
 "Failed to save passkey" = "Failed to save passkey";
@@ -119,4 +135,4 @@
 /* V2 — accessibility labels */
 "Close" = "Close";
 "Back" = "Back";
-"Toggle password visibility" = "Toggle password visibility";
+"Toggle password visibility" = "Toggle password visibility";"Try again with Face ID" = "Try again with Face ID";

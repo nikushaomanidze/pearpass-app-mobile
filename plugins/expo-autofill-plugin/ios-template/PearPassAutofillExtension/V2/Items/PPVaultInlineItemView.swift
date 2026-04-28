@@ -43,6 +43,8 @@ struct PPVaultInlineItemView: View {
                         .strokeBorder(PPColors.borderPrimary, lineWidth: 1)
                 }
             )
+            // Make the gap between lock + name + indicator hit-testable.
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
         .disabled(onTap == nil)

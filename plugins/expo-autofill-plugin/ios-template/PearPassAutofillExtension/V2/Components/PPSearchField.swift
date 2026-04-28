@@ -41,8 +41,12 @@ struct PPSearchField: View {
         ZStack {
             RoundedRectangle(cornerRadius: PPRadii.r8)
                 .fill(PPColors.surfaceSearchField)
+            // Keep the border color constant on focus — the green focus ring
+            // is reserved for inputs that need explicit confirmation feedback
+            // (master password, vault password). Search shouldn't pulse
+            // accent on every tap.
             RoundedRectangle(cornerRadius: PPRadii.r8)
-                .strokeBorder(isFocused ? PPColors.focusRing : PPColors.borderSearchField, lineWidth: 1)
+                .strokeBorder(PPColors.borderSearchField, lineWidth: 1)
         }
     }
 }

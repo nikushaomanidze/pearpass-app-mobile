@@ -151,6 +151,10 @@ struct CombinedItemsV2View: View {
                     .rotationEffect(isVaultDropdownOpen ? .degrees(180) : .degrees(0))
             }
             .padding(PPSpacing.s12)
+            // Without contentShape SwiftUI's button hit-test is content-only,
+            // so the gap between the lock icon, the vault name, and the
+            // chevron isn't tappable. Make the whole padded row hit-target.
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
     }

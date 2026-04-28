@@ -459,10 +459,17 @@ class CredentialProviderViewController: ASCredentialProviderViewController {
     }
 
     private func attachV2HostView(mode: CombinedItemsMode, registrationContext: V2RegistrationContext?, passkeyRpId: String?) {
-        // Flatten the system sheet's rounded corners on iOS 16.4+ so V2's edges
-        // run flush with the screen (mirrors Android's borderless partial sheet).
+        // Pin the sheet to 85% of the screen with flat corners so the V2
+        // surface sits flush against the screen edges and matches Android's
+        // 0.85 partial-height autofill window. iOS 16+ exposes custom detents.
         if #available(iOS 16.0, *) {
-            sheetPresentationController?.preferredCornerRadius = 0
+            if let sheet = sheetPresentationController {
+                sheet.preferredCornerRadius = 0
+                let detent = UISheetPresentationController.Detent.custom { context in
+                    context.maximumDetentValue * 0.85
+                }
+                sheet.detents = [detent]
+            }
         }
 
         let onCompleteRegistration: ((PasskeyCredential, Data, Data) -> Void)? = {
@@ -478,6 +485,22 @@ class CredentialProviderViewController: ASCredentialProviderViewController {
                 }
             }
             return nil
+        }()
+
+        // Passkey assertion handler — set only when iOS invoked us via the
+        // passkey assertion path (clientDataHash is captured at request time).
+        // Password-only autofill leaves passkeyClientDataHash nil and the
+        // handler stays nil; tapping a passkey there is unsupported (the
+        // system asked for a password, not a signed assertion).
+        let onCompletePasskeyAssertion: ((PasskeyCredential) -> Void)? = {
+            guard mode == .assertion, let clientDataHash = self.passkeyClientDataHash else {
+                return nil
+            }
+            return { [weak self] credential in
+                if #available(iOS 17.0, *) {
+                    self?.completePasskeyAssertion(credential: credential, clientDataHash: clientDataHash)
+                }
+            }
         }()
 
         let v2View = V2HostView(
@@ -496,6 +519,7 @@ class CredentialProviderViewController: ASCredentialProviderViewController {
                 self?.extensionContext.completeRequest(withSelectedCredential: credential, completionHandler: nil)
             },
             onCompleteRegistration: onCompleteRegistration,
+            onCompletePasskeyAssertion: onCompletePasskeyAssertion,
             onVaultClientCreated: { [weak self] client in
                 self?.vaultClient = client
             }

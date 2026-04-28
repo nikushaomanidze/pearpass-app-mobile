@@ -34,7 +34,7 @@ struct PPPasswordField: View {
                             .textContentType(textContentType)
                     }
                 }
-                .font(Font.custom(PPFontFamily.inter, size: PPFontSizes.s14))
+                .font(PPTypography.labelEmphasized)
                 .foregroundColor(PPColors.textPrimary)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled(true)
@@ -42,9 +42,14 @@ struct PPPasswordField: View {
             }
 
             Button(action: { isVisible.toggle() }) {
-                Image("Icons/Eye", bundle: .main)
+                // Eye when value is shown, eye-slash when hidden — mirrors V1
+                // PasswordInput's two-icon pattern. Both SVGs are pre-sized
+                // to the same visual footprint inside their 24x24 viewBoxes,
+                // so they render at the same 24x24 frame.
+                Image(isVisible ? "Icons/Eye" : "Icons/EyeSlash", bundle: .main)
                     .renderingMode(.template)
                     .resizable()
+                    .aspectRatio(contentMode: .fit)
                     .frame(width: 24, height: 24)
                     .foregroundColor(PPColors.textPrimary)
             }
