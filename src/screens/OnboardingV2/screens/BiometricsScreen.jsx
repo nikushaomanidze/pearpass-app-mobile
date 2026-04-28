@@ -144,7 +144,8 @@ export const BiometricsScreen = () => {
             <View style={styles.descriptionContainer}>
               <Text
                 as="p"
-                color={theme.colors.colorTextSecondary}
+                color={theme.colors.colorTextPrimary}
+                style={styles.description}
                 data-testid="onboarding-v2-biometrics-description"
               >
                 {t`Use your fingerprint or face to securely unlock PearPass and confirm actions. It's faster than entering your Master Password and works only with your approval.`}
@@ -210,5 +211,8 @@ const styles = StyleSheet.create({
   descriptionContainer: {
     alignItems: 'center',
     marginBottom: 30
+  },
+  description: {
+    textAlign: 'center'
   }
 })

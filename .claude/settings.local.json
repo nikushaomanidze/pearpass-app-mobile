@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -E \"\\\\.\\(ts|tsx|js|jsx\\)$\")",
+      "Bash(/android/gradlew app:assembleDebug --info)",
+      "Bash(git -C /Users/denislupookov/pearpass-app-mobile-tether diff HEAD -- src/screens/OnboardingV2/screens/AutofillScreen.jsx src/screens/OnboardingV2/screens/BiometricsScreen.jsx src/screens/OnboardingV2/screens/DataLocalScreen.jsx src/screens/OnboardingV2/screens/SyncScreen.jsx)",
+      "Bash(git -C /Users/denislupookov/pearpass-app-mobile-tether log --oneline -10 --name-status)",
+      "Bash(xargs ls *)",
+      "Bash(git -C /Users/denislupookov/pearpass-app-mobile-tether show 9ffc794 -- plugins/expo-autofill-plugin/src/android/withAndroidAutofillService.ts)",
+      "Bash(./android/gradlew -p android app:assembleDebug -x lint -x test --configure-on-demand --build-cache)",
+      "Bash(git -C /Users/denislupookov/pearpass-app-mobile-tether log --oneline --follow -- plugins/expo-autofill-plugin/android-template/res/font/pp_v2_inter.xml plugins/expo-autofill-plugin/android-template/res/font/inter.ttf)",
+      "Bash(git -C /Users/denislupookov/pearpass-app-mobile-tether log --all --oneline --diff-filter=A -- \"plugins/expo-autofill-plugin/android-template/res/font/pp_v2_inter.xml\" \"plugins/expo-autofill-plugin/android-template/res/font/inter.ttf\")",
+      "Bash(git -C /Users/denislupookov/pearpass-app-mobile-tether show 0307c5e --stat)",
+      "Bash(cp /Users/denislupookov/pearpass-app-mobile-tether/plugins/expo-autofill-plugin/android-template/res/font/inter.ttf /Users/denislupookov/pearpass-app-mobile-tether/android/app/src/main/res/font/inter.ttf)",
+      "Bash(cp /Users/denislupookov/pearpass-app-mobile-tether/plugins/expo-autofill-plugin/android-template/res/font/pp_v2_inter.xml /Users/denislupookov/pearpass-app-mobile-tether/android/app/src/main/res/font/pp_v2_inter.xml)",
+      "Bash(grep -E \"\\\\.\\(tsx?|jsx?\\)$\")",
+      "Bash(grep -E \"\\\\.\\(jsx?|tsx?\\)$\")",
+      "Bash(npx jest *)",
+      "Bash(git check-ignore *)",
+      "Bash(npm run *)",
+      "mcp__plugin_figma_figma__get_design_context"
+    ]
+  }
+}

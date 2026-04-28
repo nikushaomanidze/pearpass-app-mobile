@@ -253,7 +253,7 @@ const getStyles = (theme) =>
       paddingHorizontal: rawTokens.spacing16
     },
     topSection: {
-      paddingTop: rawTokens.spacing40,
+      paddingTop: 60,
       gap: rawTokens.spacing48
     },
     titleContainer: {
