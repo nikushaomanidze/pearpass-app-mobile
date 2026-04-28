@@ -100,7 +100,7 @@ export const AutofillScreen = () => {
             <View style={styles.descriptionContainer}>
               <Text
                 as="p"
-                color={theme.colors.colorTextPrimary}
+                color={theme.colors.colorTextSecondary}
                 style={styles.description}
                 data-testid="onboarding-v2-autofill-description"
               >

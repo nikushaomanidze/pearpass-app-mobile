@@ -188,7 +188,7 @@ export const CreateOrEditWifiPasswordContent = ({
         <MultiSlotInput
           actions={
             <Button
-              variant="tertiary"
+              variant="tertiaryAccent"
               iconBefore={<SyncLock />}
               onClick={openPasswordGenerator}
             >
@@ -231,7 +231,7 @@ export const CreateOrEditWifiPasswordContent = ({
           actions={
             <Button
               size="small"
-              variant="tertiary"
+              variant="tertiaryAccent"
               iconBefore={<Add />}
               onClick={() => addCustomField({ type: 'note', note: '' })}
             >

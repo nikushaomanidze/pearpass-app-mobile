@@ -184,11 +184,12 @@ export const BottomSheetReauthContent = ({
     }
   }
 
-  const biometricLabel = isFaceID
-    ? t`Try again with Face ID`
-    : isFingerprint
-      ? t`Try again with Fingerprint`
-      : null
+  const biometricLabel =
+    biometricType === BiometricType.Face
+      ? t`Try again with Face ID`
+      : biometricType === BiometricType.Fingerprint
+        ? t`Try again with Fingerprint`
+        : null
 
   return (
     <Layout

@@ -156,11 +156,12 @@ export const MasterPasswordScreen = () => {
     }
   }, [initVaults, navigation, t])
 
-  const biometricLabel = isFaceID
-    ? t`Try again with Face ID`
-    : isFingerprint
-      ? t`Try again with Fingerprint`
-      : null
+  const biometricLabel =
+    isFaceID && !isFingerprint
+      ? t`Try again with Face ID`
+      : isFingerprint
+        ? t`Try again with Fingerprint`
+        : null
 
   return (
     <OnboardingLayout topGradient avoidBottomInset={isKeyboardVisible}>
@@ -193,7 +194,7 @@ export const MasterPasswordScreen = () => {
                 data-testid="auth-v2-master-password-input"
               />
 
-              {failedAttempts >= 2 ? (
+              {failedAttempts >= 2 && unsupportedFeaturesEnabled() ? (
                 <AlertMessage
                   variant="warning"
                   title={t`Forgot your Master Password?`}

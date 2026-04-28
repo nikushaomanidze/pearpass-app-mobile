@@ -40,8 +40,10 @@ export const BiometricsScreen = () => {
 
   const biometricsChecked = useRef(false)
 
-  // Skip this screen if biometrics is not supported or already enabled
+  // Skip this screen if biometrics is not supported or already enabled.
+  // Only auto-skip when reached via the real onboarding flow (password param present).
   useEffect(() => {
+    if (!password) return
     if (biometricsChecked.current) return
     const timer = setTimeout(() => {
       biometricsChecked.current = true
@@ -51,7 +53,7 @@ export const BiometricsScreen = () => {
     }, 500)
 
     return () => clearTimeout(timer)
-  }, [isBiometricsSupported, isBiometricsEnabled])
+  }, [isBiometricsSupported, isBiometricsEnabled, password])
 
   const title = isIOS
     ? t`Unlock faster with Face ID`
@@ -144,7 +146,7 @@ export const BiometricsScreen = () => {
             <View style={styles.descriptionContainer}>
               <Text
                 as="p"
-                color={theme.colors.colorTextPrimary}
+                color={theme.colors.colorTextSecondary}
                 style={styles.description}
                 data-testid="onboarding-v2-biometrics-description"
               >

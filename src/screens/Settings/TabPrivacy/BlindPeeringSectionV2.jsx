@@ -258,7 +258,7 @@ export const BlindPeeringSectionV2 = () => {
                 actions={
                   blindPeersList.length < BLIND_PEERS_LIMIT ? (
                     <Button
-                      variant="tertiary"
+                      variant="tertiaryAccent"
                       iconBefore={<Add />}
                       onClick={addPeerRow}
                     >

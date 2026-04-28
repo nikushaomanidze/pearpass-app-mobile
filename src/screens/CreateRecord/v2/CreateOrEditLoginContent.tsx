@@ -351,7 +351,7 @@ export const CreateOrEditLoginContent = ({
         <MultiSlotInput
           actions={
             <Button
-              variant="tertiary"
+              variant="tertiaryAccent"
               iconBefore={<SyncLock />}
               onClick={openPasswordGenerator}
             >
@@ -412,7 +412,7 @@ export const CreateOrEditLoginContent = ({
         <MultiSlotInput
           actions={
             <Button
-              variant="tertiary"
+              variant="tertiaryAccent"
               iconBefore={<Add />}
               onClick={() => addItem({ website: '' })}
             >
@@ -451,7 +451,7 @@ export const CreateOrEditLoginContent = ({
             <ContextMenu
               trigger={
                 <Button
-                  variant="tertiary"
+                  variant="tertiaryAccent"
                   iconBefore={<Add />}
                 >
                   {t`Add Another Folder`}
@@ -509,7 +509,7 @@ export const CreateOrEditLoginContent = ({
           actions={
             <Button
               size='small'
-              variant="tertiary"
+              variant="tertiaryAccent"
               iconBefore={<Add />}
               onClick={() => addCustomField({ type: 'note', note: '' })}
             >
