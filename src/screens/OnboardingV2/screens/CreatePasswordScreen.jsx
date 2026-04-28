@@ -11,11 +11,11 @@ import {
 } from '@tetherto/pearpass-lib-ui-kit'
 import { KeyboardArrowRightFilled } from '@tetherto/pearpass-lib-ui-kit/icons'
 import { Keyboard, Linking, StyleSheet, View } from 'react-native'
-import { useKeyboardVisibility } from 'src/hooks/useKeyboardVisibility'
 
 import { NAVIGATION_ROUTES } from '../../../constants/navigation'
 import { AuthFlowFormLayout } from '../../../containers/Auth/shared/AuthFlowFormLayout'
 import { ConfirmablePasswordFields } from '../../../containers/Auth/shared/ConfirmablePasswordFields'
+import { useKeyboardVisibility } from '../../../hooks/useKeyboardVisibility'
 import { unsupportedFeaturesEnabled } from '../../../utils/unsupportedFeatures'
 import { usePasswordCreation } from '../hooks/usePasswordCreation'
 
