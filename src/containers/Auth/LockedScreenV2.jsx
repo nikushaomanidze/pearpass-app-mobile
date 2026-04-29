@@ -24,7 +24,6 @@ export const LockedScreenV2 = () => {
   const { t } = useLingui()
   const { theme } = useTheme()
   const { masterPasswordStatus, refreshMasterPasswordStatus } = useUserData()
-  const styles = getStyles()
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', (nextAppState) => {
@@ -48,7 +47,7 @@ export const LockedScreenV2 = () => {
 
       Toast.show({
         type: 'baseToast',
-        text1: t`Now you can enter you master password once again!`,
+        text1: t`Now you can enter your master password once again!`,
         position: 'bottom',
         bottomOffset: 100
       })
@@ -131,57 +130,56 @@ export const LockedScreenV2 = () => {
   )
 }
 
-const getStyles = () =>
-  StyleSheet.create({
-    scrollView: {
-      flex: 1
-    },
-    header: {
-      textAlign: 'center',
-      marginBottom: rawTokens.spacing6
-    },
-    scrollViewContent: {
-      flexGrow: 1,
-      paddingHorizontal: rawTokens.spacing16
-    },
-    topSection: {
-      paddingTop: rawTokens.spacing60,
-      alignItems: 'center',
-      width: '100%',
-      maxWidth: 400,
-      alignSelf: 'center'
-    },
-    descriptionBlock: {
-      width: '100%',
-      gap: rawTokens.spacing4,
-      alignItems: 'center'
-    },
-    descriptionLine: {
-      textAlign: 'center',
-      width: '100%'
-    },
-    timerStrip: {
-      marginTop: rawTokens.spacing24,
-      width: '100%',
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      borderRadius: 10,
-      borderWidth: 1,
-      paddingVertical: rawTokens.spacing8,
-      paddingHorizontal: rawTokens.spacing10,
-      backgroundColor: 'transparent'
-    },
-    timerLeft: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: rawTokens.spacing8,
-      flexShrink: 1
-    },
-    timerDigits: {
-      fontSize: rawTokens.fontSize14,
-      fontFamily: rawTokens.fontPrimary,
-      fontWeight: rawTokens.weightMedium,
-      fontVariant: ['tabular-nums']
-    }
-  })
+const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1
+  },
+  header: {
+    textAlign: 'center',
+    marginBottom: rawTokens.spacing6
+  },
+  scrollViewContent: {
+    flexGrow: 1,
+    paddingHorizontal: rawTokens.spacing16
+  },
+  topSection: {
+    paddingTop: rawTokens.spacing60,
+    alignItems: 'center',
+    width: '100%',
+    maxWidth: 400,
+    alignSelf: 'center'
+  },
+  descriptionBlock: {
+    width: '100%',
+    gap: rawTokens.spacing4,
+    alignItems: 'center'
+  },
+  descriptionLine: {
+    textAlign: 'center',
+    width: '100%'
+  },
+  timerStrip: {
+    marginTop: rawTokens.spacing24,
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderRadius: rawTokens.spacing10,
+    borderWidth: 1,
+    paddingVertical: rawTokens.spacing8,
+    paddingHorizontal: rawTokens.spacing10,
+    backgroundColor: 'transparent'
+  },
+  timerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: rawTokens.spacing8,
+    flexShrink: 1
+  },
+  timerDigits: {
+    fontSize: rawTokens.fontSize14,
+    fontFamily: rawTokens.fontPrimary,
+    fontWeight: rawTokens.weightMedium,
+    fontVariant: ['tabular-nums']
+  }
+})

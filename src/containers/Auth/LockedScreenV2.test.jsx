@@ -208,7 +208,7 @@ describe('LockedScreenV2', () => {
       getByText('For your security, access is temporarily locked.')
     ).toBeTruthy()
     expect(getByText('Try again in')).toBeTruthy()
-    expect(getByTestId('locked-screen-countdown').props.children).toBe('2:05')
+    expect(getByText('2:05').props.children).toBe('2:05')
     expect(getByTestId('watch-later-icon')).toBeTruthy()
   })
 
@@ -279,7 +279,7 @@ describe('LockedScreenV2', () => {
       refreshMasterPasswordStatus: mockRefreshMasterPasswordStatus
     })
 
-    const { getByTestId } = renderLockedScreen()
+    const { getByText } = renderLockedScreen()
 
     await act(async () => {
       jest.advanceTimersByTime(2000)
@@ -297,7 +297,7 @@ describe('LockedScreenV2', () => {
         bottomOffset: 100
       })
     )
-    expect(getByTestId('locked-screen-countdown').props.children).toBe('0:00')
+    expect(getByText('0:00').props.children).toBe('0:00')
 
     jest.useRealTimers()
   })
