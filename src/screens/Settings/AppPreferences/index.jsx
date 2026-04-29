@@ -3,7 +3,6 @@ import { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { useLingui } from '@lingui/react/macro'
 import { useNavigation } from '@react-navigation/native'
 import {
-  AUTO_LOCK_TIMEOUT_OPTIONS,
   CLIPBOARD_CLEAR_TIMEOUT,
   UNSUPPORTED
 } from '@tetherto/pearpass-lib-constants'
@@ -29,6 +28,7 @@ import * as SecureStore from 'expo-secure-store'
 import { AppState, Platform, Pressable, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
+import { IOS_APP_GROUP_ID } from '../../../constants/iosAppGroup'
 import { SECURE_STORAGE_KEYS } from '../../../constants/secureStorageKeys'
 import { OptionsSheet } from '../../../containers/BottomSheet/OptionsSheet'
 import { Layout } from '../../../containers/Layout'
@@ -65,6 +65,7 @@ export const AppPreferences = () => {
   const [isNonSecureAllowed, setIsNonSecureAllowed] = useState(false)
   const [isPinEnabled, setIsPinEnabled] = useState(false)
   const [isRemindersEnabled, setIsRemindersEnabled] = useState(true)
+  const [isCopyToClipboardEnabled, setIsCopyToClipboardEnabled] = useState(true)
   const appStateRef = useRef(AppState.currentState)
 
   const clipboardTimeoutOptions = useMemo(
@@ -83,11 +84,16 @@ export const AppPreferences = () => {
   )
 
   const autoLockOptions = useMemo(
-    () =>
-      Object.values(AUTO_LOCK_TIMEOUT_OPTIONS).map((option) => ({
-        label: t(option.label),
-        value: option.value
-      })),
+    () => [
+      { label: t`1 Minute`, value: 60000 },
+      { label: t`3 Minutes`, value: 180000 },
+      { label: t`5 Minutes`, value: 300000 },
+      { label: t`10 Minutes`, value: 600000 },
+      { label: t`30 Minutes`, value: 1800000 },
+      { label: t`1 Hour`, value: 3600000 },
+      { label: t`3 Hours`, value: 10800000 },
+      { label: t`Never`, value: null }
+    ],
     [t]
   )
 
@@ -98,10 +104,13 @@ export const AppPreferences = () => {
 
   useEffect(() => {
     const loadSettings = async () => {
-      const [clipTimeout, nonSecure, pin] = await Promise.all([
+      const [clipTimeout, nonSecure, pin, copyToClipboard] = await Promise.all([
         SecureStore.getItemAsync(SECURE_STORAGE_KEYS.CLIPBOARD_CLEAR_TIMEOUT),
         SecureStore.getItemAsync(SECURE_STORAGE_KEYS.ALLOW_NON_SECURE_WEBSITES),
-        SecureStore.getItemAsync(SECURE_STORAGE_KEYS.PIN_ENABLED)
+        SecureStore.getItemAsync(SECURE_STORAGE_KEYS.PIN_ENABLED),
+        SecureStore.getItemAsync(SECURE_STORAGE_KEYS.COPY_TO_CLIPBOARD, {
+          accessGroup: IOS_APP_GROUP_ID
+        })
       ])
 
       if (clipTimeout === 'null') {
@@ -112,6 +121,7 @@ export const AppPreferences = () => {
       setIsNonSecureAllowed(nonSecure === 'true')
       setIsPinEnabled(pin === 'true')
       setIsRemindersEnabled(isPasswordChangeReminderEnabled)
+      setIsCopyToClipboardEnabled(copyToClipboard !== 'false')
     }
 
     refreshAutofillStatus()
@@ -174,6 +184,19 @@ export const AppPreferences = () => {
       checked,
       true
     )
+  }, [])
+
+  const handleCopyToClipboardToggle = useCallback(async (checked) => {
+    setIsCopyToClipboardEnabled(checked)
+    if (checked) {
+      await SecureStore.deleteItemAsync(SECURE_STORAGE_KEYS.COPY_TO_CLIPBOARD)
+    } else {
+      await SecureStore.setItemAsync(
+        SECURE_STORAGE_KEYS.COPY_TO_CLIPBOARD,
+        'false',
+        { accessGroup: IOS_APP_GROUP_ID }
+      )
+    }
   }, [])
 
   const handleClipboardTimeoutSelect = useCallback(
@@ -436,6 +459,14 @@ export const AppPreferences = () => {
                 />
               </Pressable>
             </View>
+          </View>
+          <View style={cardRowStyle(false)}>
+            <ToggleSwitch
+              checked={isCopyToClipboardEnabled}
+              onChange={handleCopyToClipboardToggle}
+              label={t`Copy to Clipboard`}
+              description={t`Enable one-tap copying to move your credentials between apps effortlessly.`}
+            />
           </View>
           <View style={cardRowStyle(true)}>
             <ToggleSwitch

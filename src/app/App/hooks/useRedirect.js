@@ -37,6 +37,11 @@ export const useRedirect = () => {
           return
         }
 
+        if (userData?.masterPasswordStatus?.isLocked) {
+          setInitialRouteName('Welcome')
+          return
+        }
+
         if (isV2()) {
           setInitialRouteName(
             unsupportedFeaturesEnabled() ? 'AuthV2Pin' : 'AuthV2MasterPassword'
