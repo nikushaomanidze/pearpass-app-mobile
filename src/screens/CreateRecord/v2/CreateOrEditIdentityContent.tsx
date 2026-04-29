@@ -458,7 +458,7 @@ export const CreateOrEditIdentityContent = ({
           variant="primary"
           fullWidth
           isLoading={isLoading}
-          disabled={isLoading}
+          disabled={isLoading || !values.title.trim()}
           onClick={handleSubmit(onSubmit)}
         >
           {actionLabel}
@@ -705,6 +705,14 @@ export const CreateOrEditIdentityContent = ({
           testID="comments-multi-slot-input-slot-0"
         />
 
+        <AttachmentFieldsV2<AttachmentFile>
+          attachments={identityAttachmentSources.map(({ attachment }) => attachment)}
+          isEditing={isEditing}
+          onAdd={handleFileUpload}
+          onReplace={handleAttachmentReplace}
+          onDelete={handleAttachmentDelete}
+        />
+
         <MultiSlotInput
           actions={
             <Button
@@ -763,14 +771,6 @@ export const CreateOrEditIdentityContent = ({
               />
             )}
         </MultiSlotInput>
-
-        <AttachmentFieldsV2<AttachmentFile>
-          attachments={identityAttachmentSources.map(({ attachment }) => attachment)}
-          isEditing={isEditing}
-          onAdd={handleFileUpload}
-          onReplace={handleAttachmentReplace}
-          onDelete={handleAttachmentDelete}
-        />
       </View>
     </Layout>
   )
