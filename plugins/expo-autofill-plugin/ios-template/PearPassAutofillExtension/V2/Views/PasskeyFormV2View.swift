@@ -172,14 +172,14 @@ struct PasskeyFormV2View: View {
                                 placeholder: NSLocalizedString("Optional", comment: "V2 comment placeholder")
                             )
 
-                            Spacer().frame(height: PPSpacing.s16)
-
-                            PPButton(
-                                title: NSLocalizedString("Upload File", comment: "V2 upload file button"),
-                                variant: .secondary,
-                                isEnabled: !isSaving,
-                                action: { showFilePicker = true }
-                            )
+                            // Spacer().frame(height: PPSpacing.s16)
+                            //
+                            // PPButton(
+                            //     title: NSLocalizedString("Upload File", comment: "V2 upload file button"),
+                            //     variant: .secondary,
+                            //     isEnabled: !isSaving,
+                            //     action: { showFilePicker = true }
+                            // )
 
                             if !existingAttachments.isEmpty || !attachments.isEmpty {
                                 Spacer().frame(height: PPSpacing.s16)

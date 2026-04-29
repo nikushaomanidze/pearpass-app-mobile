@@ -70,13 +70,6 @@ struct MasterPasswordV2View: View {
         !password.isEmpty && !isAuthenticating
     }
 
-    /// Tracks the iOS keyboard height so the content card can lift above
-    /// the keyboard — V1 MasterPasswordView parity. SwiftUI's built-in
-    /// avoidance doesn't reach inside the 85% custom-detent sheet host on
-    /// smaller devices, so the password field would otherwise sit behind
-    /// the keyboard.
-    @State private var keyboardHeight: CGFloat = 0
-
     var body: some View {
         VStack(spacing: 0) {
             PPSheetHeader(
@@ -163,19 +156,6 @@ struct MasterPasswordV2View: View {
                     .padding(.bottom, PPSpacing.s12)
                 }
             }
-        }
-        .offset(y: -keyboardHeight)
-        .animation(.easeOut(duration: 0.25), value: keyboardHeight)
-        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { notification in
-            if let frame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
-                // Lift by half the keyboard height — full keyboard shift
-                // would push the header off-screen, half is enough to clear
-                // the password field on small devices.
-                keyboardHeight = frame.height / 2
-            }
-        }
-        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
-            keyboardHeight = 0
         }
     }
 }
