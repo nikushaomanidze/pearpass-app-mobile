@@ -7,7 +7,7 @@ import { Platform } from 'react-native'
 type ImportVaultState = {
   isLoading: boolean
   error: string
-  pairedVault: Record<string, unknown> | null
+  isPaired: boolean
 }
 
 export const useImportVault = () => {
@@ -15,7 +15,7 @@ export const useImportVault = () => {
   const [state, setState] = useState<ImportVaultState>({
     isLoading: false,
     error: '',
-    pairedVault: null
+    isPaired: false
   })
 
   const { refetch: refetchVault, addDevice } = useVault()
@@ -30,17 +30,17 @@ export const useImportVault = () => {
       try {
         setState((prev) => ({ ...prev, error: '', isLoading: true }))
         const vaultId = await pairActiveVault(code)
-        const vault = await refetchVault(vaultId)
+        await refetchVault(vaultId)
         await addDevice(Platform.OS + ' ' + Platform.Version)
-        setState((prev) => ({ ...prev, isLoading: false, pairedVault: vault }))
-        return vault
+        setState((prev) => ({ ...prev, isLoading: false, isPaired: true }))
+        return true
       } catch {
         setState((prev) => ({
           ...prev,
           isLoading: false,
           error: t`Something went wrong, please check invite code`
         }))
-        return null
+        return false
       }
     },
     [pairActiveVault, refetchVault, addDevice]
@@ -48,13 +48,13 @@ export const useImportVault = () => {
 
   const cancelPairing = useCallback(async () => {
     await cancelPairActiveVault()
-    setState({ isLoading: false, error: '', pairedVault: null })
+    setState({ isLoading: false, error: '', isPaired: false })
   }, [cancelPairActiveVault])
 
   return {
     isLoading: state.isLoading || isPairing,
     error: state.error,
-    pairedVault: state.pairedVault,
+    isPaired: state.isPaired,
     pairWithCode,
     cancelPairing
   }
