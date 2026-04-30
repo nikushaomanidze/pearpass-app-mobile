@@ -52,10 +52,7 @@ struct MasterPasswordV2View: View {
         }
     }
 
-    /// Inline retry link that sits below the master-password field. Wording
-    /// nudges the user that biometric is the same auth path they were prompted
-    /// with on screen open ("again"), and the suffix tracks the device's
-    /// actual biometry type so Touch ID hardware doesn't read "Face ID".
+    /// Suffix tracks device biometry type so Touch ID hardware doesn't read "Face ID".
     private var biometricRetryTitle: String {
         switch KeychainHelper.shared.getBiometricType() {
         case .faceID:
@@ -75,10 +72,9 @@ struct MasterPasswordV2View: View {
         }
     }
 
+    /// Static label — spinner replaces it during isLoading.
     private var continueButtonTitle: String {
-        isAuthenticating
-            ? NSLocalizedString("Authenticating...", comment: "Authentication in progress")
-            : NSLocalizedString("Continue", comment: "V2 continue button")
+        NSLocalizedString("Continue", comment: "V2 continue button")
     }
 
     private var continueEnabled: Bool {

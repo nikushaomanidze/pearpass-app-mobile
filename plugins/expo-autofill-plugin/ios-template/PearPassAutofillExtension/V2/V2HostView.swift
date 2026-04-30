@@ -68,9 +68,7 @@ struct V2HostView: View {
     @State private var loadedFolders: [String] = []
     @State private var formComment: String = ""
     @State private var formSaveError: String?
-    /// Inline error rendered under the websites card when one of the entries
-    /// fails URL validation on save. Cleared at the start of each save and
-    /// when the form is reopened (mirrors V1 PasskeyFormView.websiteError).
+    /// Inline error under the websites card on URL validation failure.
     @State private var formWebsiteError: String? = nil
     @State private var isSavingPasskey: Bool = false
     /// Set when the user picks an existing matching record on registration —
@@ -673,9 +671,7 @@ struct V2HostView: View {
             return
         }
 
-        // Validate website entries (mirrors V1 PasskeyFormView.validate).
-        // Empty rows are skipped — they get filtered out before save anyway.
-        // First malformed entry blocks the save and surfaces the inline error.
+        // Validate website entries — first malformed one blocks save.
         formWebsiteError = nil
         let trimmedWebsites = formWebsites.map { $0.trimmingCharacters(in: .whitespaces) }
         for entry in trimmedWebsites where !entry.isEmpty {
@@ -699,11 +695,7 @@ struct V2HostView: View {
                     throw PasskeyJobError.noHashedPassword
                 }
 
-                // 3. Build form data — websites array filtered for empties so
-                //    placeholder rows don't end up in the saved record, then
-                //    each surviving entry is normalized via addHttps so bare
-                //    hostnames pick up a scheme (V1 parity). Folder is the
-                //    user's pick from the form (if any).
+                // 3. Build form data — drop empty rows, normalize via addHttps.
                 let websites = trimmedWebsites
                     .filter { !$0.isEmpty }
                     .map { self.addHttps($0) }
@@ -1225,10 +1217,7 @@ struct V2HostView: View {
         return s
     }
 
-    /// Mirrors V1 PasskeyFormView.addHttps — lowercases the input and prepends
-    /// "https://" when it lacks an http/https scheme. Used both for save-time
-    /// validation (URL parsing wants a scheme to find a host) and for the
-    /// final stored value so bare hostnames don't pollute the record.
+    /// Lowercases + prepends `https://` when no scheme is present.
     private func addHttps(_ urlString: String) -> String {
         let lower = urlString.lowercased()
         if lower.hasPrefix("http://") || lower.hasPrefix("https://") {
