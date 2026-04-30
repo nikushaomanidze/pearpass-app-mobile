@@ -54,7 +54,7 @@ export const useShareVault = () => {
   useEffect(() => {
     if (data?.publicKey) {
       generateQRCodeSVG(data.publicKey, { type: 'svg', margin: 0 }).then(
-        (svgString) => {
+        (svgString: string) => {
           setSvg(svgString)
         }
       )
