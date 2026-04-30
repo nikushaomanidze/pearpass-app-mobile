@@ -42,6 +42,8 @@ export const ShareVault = () => {
   const { svg, isExpired, formattedTime, secondsLeft, vaultLink, handleCopy } =
     useShareVault()
 
+  const vaultName = vault?.name ?? t`Vault`
+
   const handleBack = useCallback(() => {
     navigation.goBack()
   }, [navigation])
@@ -63,7 +65,7 @@ export const ShareVault = () => {
   return (
     <Layout
       header={
-        <BackScreenHeader title={t`Share ${vault?.name ?? ''} Vault`} onBack={handleBack} />
+        <BackScreenHeader title={t`Share ${vaultName}`} onBack={handleBack} />
       }
       scrollable
       hideFooter
