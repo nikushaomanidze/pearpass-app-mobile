@@ -43,6 +43,12 @@ export const ShareVault = () => {
     navigation.goBack()
   }, [navigation])
 
+  useEffect(() => {
+    if (isExpired) {
+      navigation.goBack()
+    }
+  }, [isExpired, navigation])
+
   const targetOffset = (1 - secondsLeft / EXPIRE_PERIOD) * TIMER_CIRCUMFERENCE
   const animatedOffset = useSharedValue(targetOffset)
 
