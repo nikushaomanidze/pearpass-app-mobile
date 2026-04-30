@@ -34,6 +34,11 @@ struct PasskeyFormV2View: View {
     /// Inline error from the file picker — fires when an upload exceeds the
     /// 6 MB cap. Cleared on a fresh successful upload.
     @Binding var fileSizeError: String?
+    /// Inline error rendered under the websites card when one of the entries
+    /// fails URL validation on save (mirrors V1 PasskeyFormView "Wrong format
+    /// of website"). Set by V2HostView.handleFormSave; cleared on the next
+    /// save attempt and on form reopen.
+    @Binding var websiteError: String?
 
     var saveError: String? = nil
     /// Disables Save/Discard while the passkey is being generated and the
@@ -139,6 +144,13 @@ struct PasskeyFormV2View: View {
                                 }
                             )
 
+                            if let websiteError = websiteError {
+                                Text(websiteError)
+                                    .font(PPTypography.caption)
+                                    .foregroundColor(PPColors.surfaceError)
+                                    .padding(.top, PPSpacing.s4)
+                            }
+
                             Spacer().frame(height: PPSpacing.s16)
 
                             // Folder picker — single folder per record (the
@@ -172,14 +184,14 @@ struct PasskeyFormV2View: View {
                                 placeholder: NSLocalizedString("Optional", comment: "V2 comment placeholder")
                             )
 
-                            // Spacer().frame(height: PPSpacing.s16)
-                            //
-                            // PPButton(
-                            //     title: NSLocalizedString("Upload File", comment: "V2 upload file button"),
-                            //     variant: .secondary,
-                            //     isEnabled: !isSaving,
-                            //     action: { showFilePicker = true }
-                            // )
+                            Spacer().frame(height: PPSpacing.s16)
+
+                            PPButton(
+                                title: NSLocalizedString("Upload File", comment: "V2 upload file button"),
+                                variant: .secondary,
+                                isEnabled: !isSaving,
+                                action: { showFilePicker = true }
+                            )
 
                             if !existingAttachments.isEmpty || !attachments.isEmpty {
                                 Spacer().frame(height: PPSpacing.s16)

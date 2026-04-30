@@ -68,6 +68,10 @@ struct V2HostView: View {
     @State private var loadedFolders: [String] = []
     @State private var formComment: String = ""
     @State private var formSaveError: String?
+    /// Inline error rendered under the websites card when one of the entries
+    /// fails URL validation on save. Cleared at the start of each save and
+    /// when the form is reopened (mirrors V1 PasskeyFormView.websiteError).
+    @State private var formWebsiteError: String? = nil
     @State private var isSavingPasskey: Bool = false
     /// Set when the user picks an existing matching record on registration —
     /// causes save to fire UPDATE_PASSKEY (or refresh a pending ADD) instead
@@ -307,6 +311,7 @@ struct V2HostView: View {
             attachments: $formAttachments,
             existingAttachments: $formExistingAttachments,
             fileSizeError: $formFileSizeError,
+            websiteError: $formWebsiteError,
             saveError: formSaveError,
             isSaving: isSavingPasskey,
             onBack: { showPasskeyForm = false },
@@ -623,6 +628,7 @@ struct V2HostView: View {
         formatter.dateStyle = .medium
         formPasskeyDate = formatter.string(from: Date())
         formSaveError = nil
+        formWebsiteError = nil
         showPasskeyForm = true
     }
 
@@ -648,6 +654,7 @@ struct V2HostView: View {
         formatter.dateStyle = .medium
         formPasskeyDate = formatter.string(from: Date())
         formSaveError = nil
+        formWebsiteError = nil
         showPasskeyForm = true
     }
 
@@ -666,6 +673,19 @@ struct V2HostView: View {
             return
         }
 
+        // Validate website entries (mirrors V1 PasskeyFormView.validate).
+        // Empty rows are skipped — they get filtered out before save anyway.
+        // First malformed entry blocks the save and surfaces the inline error.
+        formWebsiteError = nil
+        let trimmedWebsites = formWebsites.map { $0.trimmingCharacters(in: .whitespaces) }
+        for entry in trimmedWebsites where !entry.isEmpty {
+            let candidate = addHttps(entry)
+            guard let host = URL(string: candidate)?.host, host.contains(".") else {
+                formWebsiteError = NSLocalizedString("Wrong format of website", comment: "V2 website validation error")
+                return
+            }
+        }
+
         isSavingPasskey = true
         formSaveError = nil
 
@@ -680,11 +700,13 @@ struct V2HostView: View {
                 }
 
                 // 3. Build form data — websites array filtered for empties so
-                //    placeholder rows don't end up in the saved record. Folder
-                //    is the user's pick from the form (if any).
-                let websites = formWebsites
-                    .map { $0.trimmingCharacters(in: .whitespaces) }
+                //    placeholder rows don't end up in the saved record, then
+                //    each surviving entry is normalized via addHttps so bare
+                //    hostnames pick up a scheme (V1 parity). Folder is the
+                //    user's pick from the form (if any).
+                let websites = trimmedWebsites
                     .filter { !$0.isEmpty }
+                    .map { self.addHttps($0) }
                 let formData = PasskeyFormData(
                     title: formTitleText,
                     username: formUsername,
@@ -1201,6 +1223,18 @@ struct V2HostView: View {
         if let colon = s.firstIndex(of: ":") { s = String(s[..<colon]) }
         if s.hasPrefix("www.") { s = String(s.dropFirst(4)) }
         return s
+    }
+
+    /// Mirrors V1 PasskeyFormView.addHttps — lowercases the input and prepends
+    /// "https://" when it lacks an http/https scheme. Used both for save-time
+    /// validation (URL parsing wants a scheme to find a host) and for the
+    /// final stored value so bare hostnames don't pollute the record.
+    private func addHttps(_ urlString: String) -> String {
+        let lower = urlString.lowercased()
+        if lower.hasPrefix("http://") || lower.hasPrefix("https://") {
+            return lower
+        }
+        return "https://\(lower)"
     }
 
     private func initials(for title: String?) -> String {

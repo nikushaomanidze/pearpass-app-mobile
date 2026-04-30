@@ -52,6 +52,21 @@ struct MasterPasswordV2View: View {
         }
     }
 
+    /// Inline retry link that sits below the master-password field. Wording
+    /// nudges the user that biometric is the same auth path they were prompted
+    /// with on screen open ("again"), and the suffix tracks the device's
+    /// actual biometry type so Touch ID hardware doesn't read "Face ID".
+    private var biometricRetryTitle: String {
+        switch KeychainHelper.shared.getBiometricType() {
+        case .faceID:
+            return NSLocalizedString("Try again with Face ID", comment: "V2 biometric retry link — Face ID")
+        case .touchID:
+            return NSLocalizedString("Try again with Touch ID", comment: "V2 biometric retry link — Touch ID")
+        default:
+            return NSLocalizedString("Try again with Biometrics", comment: "V2 biometric retry link — generic")
+        }
+    }
+
     private var biometricIconName: String {
         switch KeychainHelper.shared.getBiometricType() {
         case .faceID: return "faceid"
@@ -112,7 +127,7 @@ struct MasterPasswordV2View: View {
                         // password input has the visual weight of the screen.
                         if showBiometricButton {
                             Button(action: onFaceIDLogin) {
-                                Text(NSLocalizedString("Try with Face ID", comment: "V2 biometric retry link"))
+                                Text(biometricRetryTitle)
                                     .font(Font.custom(PPFontFamily.inter, size: PPFontSizes.s14))
                                     .foregroundColor(PPColors.primary)
                                     .underline()
