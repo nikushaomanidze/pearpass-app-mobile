@@ -12,7 +12,8 @@ import {
   CreateNewFolder,
   Folder,
   FolderCopy,
-  MoreVert
+  MoreVert,
+  StarOutlined
 } from '@tetherto/pearpass-lib-ui-kit/icons'
 import { useFolders, useRecordCountsByType } from '@tetherto/pearpass-lib-vault'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -25,7 +26,8 @@ import { Layout } from '../Layout'
 export const BottomSheetFolderSelectorContent = ({
   selectedFolder,
   onSelect,
-  includeAllFolders = true
+  includeAllFolders = true,
+  includeFavorites = true
 }) => {
   const { t } = useLingui()
   const navigation = useNavigation()
@@ -58,6 +60,20 @@ export const BottomSheetFolderSelectorContent = ({
       })
     } else {
       setState((prev) => ({ ...prev, folder: folderId, isFavorite: false }))
+    }
+
+    collapse()
+  }
+
+  const handleSelectFavorites = () => {
+    if (onSelect) {
+      onSelect({
+        id: 'favorite',
+        name: 'favorite',
+        isFavorite: true
+      })
+    } else {
+      setState((prev) => ({ ...prev, folder: 'favorite', isFavorite: true }))
     }
 
     collapse()
@@ -128,6 +144,19 @@ export const BottomSheetFolderSelectorContent = ({
           platform="mobile"
           showDivider
           onClick={() => handleSelect('allFolder')}
+        />
+      )}
+
+      {includeFavorites && (
+        <NavbarListItem
+          icon={<StarOutlined color={theme.colors.colorTextPrimary} />}
+          iconSize={16}
+          label={t`Favorites`}
+          count={folders?.favorites?.records?.length ?? 0}
+          selected={activeFolder === 'favorite'}
+          platform="mobile"
+          showDivider
+          onClick={handleSelectFavorites}
         />
       )}
 

@@ -53,6 +53,7 @@ export const FolderSelectField = ({
         <BottomSheetFolderSelectorContent
           selectedFolder={value}
           onSelect={handleSelect}
+          includeFavorites={false}
         />
       </ContextMenu>
     </MultiSlotInput>
