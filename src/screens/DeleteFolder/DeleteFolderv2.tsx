@@ -90,9 +90,7 @@ export const DeleteFolderV2 = ({ route }) => {
       header={<BackScreenHeader title={t`Delete Folder`} onBack={handleBack} />}
       footer={
         isDeleteFolderOnlySelected ? (
-          <Button onClick={handleDelete}>
-            {t`Delete Folder`}
-          </Button>
+          <Button onClick={handleDelete}>{t`Delete Folder`}</Button>
         ) : (
           <Button variant="destructive" onClick={handleDelete}>
             {t`Delete folders and items`}
