@@ -40,7 +40,9 @@ export const BottomSheetFolderSelectorContent = ({
   const { data: folders } = useFolders()
   const { data: recordCountsByType } = useRecordCountsByType({})
 
-  const customFolders = Object.values(folders?.customFolders ?? {})
+  const customFolders = Object.values(folders?.customFolders ?? {}).sort(
+    (a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
+  )
   const activeFolder = selectedFolder ?? state.folder
 
   const navigateAfterClose = (routeName, params) => {

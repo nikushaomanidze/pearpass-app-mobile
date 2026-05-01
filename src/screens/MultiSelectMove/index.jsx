@@ -68,7 +68,10 @@ export const MultiSelectMove = () => {
   })
 
   const folderList = useMemo(
-    () => Object.values(folders?.customFolders ?? {}),
+    () =>
+      Object.values(folders?.customFolders ?? {}).sort((a, b) =>
+        a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
+      ),
     [folders]
   )
 
