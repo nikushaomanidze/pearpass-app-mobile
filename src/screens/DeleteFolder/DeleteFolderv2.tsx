@@ -5,8 +5,15 @@ import type { NavigationProp } from '@react-navigation/native'
 import { useNavigation } from '@react-navigation/native'
 import { useFolders, useRecords } from '@tetherto/pearpass-lib-vault'
 import { UNSUPPORTED } from '@tetherto/pearpass-lib-constants'
+import { View } from 'react-native'
 
-import { Button, Radio } from '@tetherto/pearpass-lib-ui-kit'
+import {
+  Button,
+  Radio,
+  Text,
+  rawTokens,
+  useTheme
+} from '@tetherto/pearpass-lib-ui-kit'
 import { BackScreenHeader } from 'src/containers/ScreenHeader/BackScreenHeader'
 import { useSharedFilter } from 'src/context/SharedFilterContext'
 import { Layout } from 'src/containers/Layout'
@@ -18,10 +25,21 @@ export const DeleteFolderV2 = ({ route }) => {
   const [selected, setSelected] = useState('deleteFolderAndItems')
 
   const { t } = useLingui()
+  const { theme } = useTheme()
   const { data: folders, deleteFolder } = useFolders()
   const { updateRecords, deleteRecords } = useRecords({ shouldSkip: true })
   const navigation = useNavigation<NavigationProp<Record<string, undefined>>>()
   const { state, setState } = useSharedFilter()
+
+  const itemCount =
+    folders?.customFolders?.[folderName]?.records?.filter(
+      (record) => record.data
+    ).length ?? 0
+
+  const summaryText =
+    itemCount === 1
+      ? t`"${folderName}" folder contains ${itemCount} item.`
+      : t`"${folderName}" folder contains ${itemCount} items.`
 
   const handleBack = () => {
     if (navigation.canGoBack()) {
@@ -98,6 +116,11 @@ export const DeleteFolderV2 = ({ route }) => {
         )
       }
     >
+      <View style={{ marginBottom: rawTokens.spacing12 }}>
+        <Text variant="caption" color={theme.colors.colorTextSecondary}>
+          {summaryText}
+        </Text>
+      </View>
       <Radio options={defaultOptions} value={selected} onChange={setSelected} />
     </Layout>
   )
