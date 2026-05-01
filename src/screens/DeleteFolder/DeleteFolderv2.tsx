@@ -39,7 +39,7 @@ export const DeleteFolderV2 = ({ route }) => {
             value: 'deleteFolder',
             label: 'Delete Folder',
             description:
-              'Only the folder will be removed. Your items will be moved to the All Folder list.'
+              'Only the folder will be removed.\nYour items will be moved to the All Folder list.'
           }
         ]
       : []),
@@ -47,7 +47,7 @@ export const DeleteFolderV2 = ({ route }) => {
       value: 'deleteFolderAndItems',
       label: 'Delete folder and items',
       description:
-        'This will permanently remove the folder and all 12 items inside. This action cannot be undone.'
+        'This will permanently remove the folder and all 12 items inside.\nThis action cannot be undone.'
     }
   ]
 
