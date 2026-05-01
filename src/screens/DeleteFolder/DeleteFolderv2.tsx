@@ -50,7 +50,7 @@ export const DeleteFolderV2 = ({ route }) => {
     }
   ]
 
-  const isDeleteFolderOnlySelected = UNSUPPORTED && selected === 'deleteFolder'
+  const isDeleteFolderOnlySelected = selected === 'deleteFolder'
 
   const handleDelete = () => {
     deleteFolder(folderName)
