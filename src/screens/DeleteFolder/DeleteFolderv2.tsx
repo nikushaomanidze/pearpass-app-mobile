@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useLingui } from '@lingui/react/macro'
 import type { NavigationProp } from '@react-navigation/native'
 import { useNavigation } from '@react-navigation/native'
-import { useFolders } from '@tetherto/pearpass-lib-vault'
+import { useFolders, useRecords } from '@tetherto/pearpass-lib-vault'
 import { UNSUPPORTED } from '@tetherto/pearpass-lib-constants'
 
 import { Button, Radio } from '@tetherto/pearpass-lib-ui-kit'
@@ -18,7 +18,8 @@ export const DeleteFolderV2 = ({ route }) => {
   const [selected, setSelected] = useState('deleteFolderAndItems')
 
   const { t } = useLingui()
-  const { deleteFolder } = useFolders()
+  const { data: folders, deleteFolder } = useFolders()
+  const { updateRecords, deleteRecords } = useRecords({ shouldSkip: true })
   const navigation = useNavigation<NavigationProp<Record<string, undefined>>>()
   const { state, setState } = useSharedFilter()
 
@@ -52,8 +53,28 @@ export const DeleteFolderV2 = ({ route }) => {
 
   const isDeleteFolderOnlySelected = selected === 'deleteFolder'
 
-  const handleDelete = () => {
-    deleteFolder(folderName)
+  const handleDelete = async () => {
+    if (isDeleteFolderOnlySelected) {
+      const recordsInFolder =
+        folders?.customFolders?.[folderName]?.records ?? []
+
+      const itemsToMove = recordsInFolder.filter((record) => record.data)
+      const folderMarkerIds = recordsInFolder
+        .filter((record) => !record.data)
+        .map((record) => record.id)
+
+      if (itemsToMove.length) {
+        await updateRecords(
+          itemsToMove.map((record) => ({ ...record, folder: null }))
+        )
+      }
+
+      if (folderMarkerIds.length) {
+        await deleteRecords(folderMarkerIds)
+      }
+    } else {
+      await deleteFolder(folderName)
+    }
 
     if (state?.folder === folderName) {
       setState((prev) => ({ ...prev, folder: 'allFolder', isFavorite: false }))
